@@ -1,0 +1,42 @@
+log4perl.rootLogger                     = sub {return HTFeed::Log::get_root_log_config();}
+
+# appender dbi
+log4perl.appender.dbi                   = HTFeed::Log::Appender::DBI
+log4perl.appender.dbi.sql =         \
+            insert into feed_log   \
+            (timestamp,level,message,namespace,id,file,field,actual,expected,detail,operation,stage)\
+            values (?,?,?,?,?,?,?,?,?,?,?,?)
+log4perl.appender.dbi.params.1 = %d
+log4perl.appender.dbi.params.2 = %p
+
+log4perl.appender.dbi.layout            = Log::Log4perl::Layout::NoopLayout
+log4perl.appender.dbi.warp_message      = HTFeed::Log::Warp::toDBArray
+
+# appender screen
+log4perl.appender.screen                = Log::Log4perl::Appender::ScreenColoredLevels
+log4perl.appender.screen.stderr         = 0
+log4perl.appender.screen.layout         = HTFeed::Log::Layout::PrettyPrintPID
+log4perl.appender.screen.color.TRACE    = white
+log4perl.appender.screen.color.DEBUG    = white
+log4perl.appender.screen.color.INFO     = bold cyan
+log4perl.appender.screen.color.ERROR    = bold red
+log4perl.appender.screen.color.WARN     = bold yellow
+log4perl.appender.screen.color.FATAL    = bold red
+# make sure HTFeed::Log::Layout::PrettyPrint gets an array and not a string
+log4perl.appender.screen.warp_message    = 0
+
+# appender file
+log4perl.appender.file              = Log::Log4perl::Appender::File
+log4perl.appender.file.filename     = /dev/null
+log4perl.appender.file.mode         = write
+log4perl.appender.file.layout       = HTFeed::Log::Layout::PrettyPrint
+log4perl.appender.file.warp_message = 0
+
+# html (for validator)
+log4perl.appender.html                 = Log::Log4perl::Appender::Screen
+log4perl.appender.html.layout          = HTFeed::Log::Layout::HTML
+log4perl.appender.html.stderr         = 0
+log4perl.appender.html.warp_message    = 0
+
+# general config
+log4perl.oneMessagePerAppender = 1
